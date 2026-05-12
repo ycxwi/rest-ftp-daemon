@@ -1,0 +1,6 @@
+-# coding: utf-8
+- tokens = Conf[:endpoints] || {}
+
+%h2 Endpoint tokens
+- tokens.each do |name, value|
+  = token_to_label name, value

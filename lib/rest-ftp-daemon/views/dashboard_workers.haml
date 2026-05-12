@@ -1,0 +1,37 @@
+-# coding: utf-8
+- variables = RestFtpDaemon::WorkerPool.instance.worker_variables
+
+%h2 Worker status
+
+%table.table.table-striped.table-hover.table-condensed
+
+  %thead
+    %tr
+      %th worker
+      %th pool
+      %th status
+      %th job
+      %th.text-right seen
+
+  %tbody
+    - variables.each do |wid, vars|
+      - status = vars[:status]
+      - alive = RestFtpDaemon::WorkerPool.instance.worker_alive? wid
+      - trclass = WORKER_STYLES[status]
+
+      - unless alive
+        - trclass = "danger"
+        - status = "DOWN"
+
+      %tr{class: trclass.to_s}
+        %td= wid
+        %td= vars[:pool]
+        %td= status
+        %td= vars[:jid]
+        %td.text-right
+
+          - if vars[:updated_at].is_a? Time
+            - no_news_for = (Time.now - vars[:updated_at]).round(0)
+            = formatted_duration no_news_for
+          - else
+            = "?"

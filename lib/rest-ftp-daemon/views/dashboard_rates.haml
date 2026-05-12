@@ -1,0 +1,28 @@
+-# coding: utf-8
+
+- groups = {pool: "pool", targethost: "target"}
+
+
+%h2 Transfer rates
+
+
+- groups.each do |group_by, group_title|
+  - rates_by_status = RestFtpDaemon::JobQueue.instance.rate_by(group_by)
+
+  %table.table.table-striped.table-hover.table-condensed
+
+    %thead
+      %tr
+        %th= "by #{group_title}"
+        %th.text-right bitrate
+
+    %tbody
+      - rates_by_status.each do |group, rate|
+        - next if group.nil?
+        - trclass = (rate.nil? ? "" : "info")
+
+        %tr{class: trclass}
+          %td
+            = group
+          %td.text-right
+            = format_bytes(rate, "bps")

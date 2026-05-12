@@ -1,0 +1,84 @@
+-# coding: utf-8
+- jobs.each do |job|
+  - error_message     = job.get_info(INFO_ERROR_MESSAGE)
+  - work_progress     = job.get_info(INFO_TRANFER_PROGRESS)
+  - transfer_total    = job.get_info(INFO_TRANSFER_TOTAL)
+  - transfer_bitrate  = job.get_info(INFO_TRANFER_BITRATE)
+  - work_sent         = job.get_info(INFO_TRANFER_SENT)
+
+  - source_count      = job.get_info(INFO_SOURCE_COUNT) || 0
+  - source_processed  = job.get_info(INFO_SOURCE_PROCESSED) || 0
+  - source_current    = job.get_info(INFO_SOURCE_CURRENT)
+
+  - job_working       = [JOB_STATUS_UPLOADING, JOB_STATUS_TRANSFORMING].include? job.status
+
+  - trclass = JOB_STYLES[job.status]
+
+  - unless job.error.nil?
+    - trclass = "warning"
+
+  %tr{class: trclass.to_s}
+
+    %td
+      %a{href: dashboard_job_url(job)}
+        %b= job.id
+
+    %td= job_type job
+
+    %td= job.pool
+
+    %td
+      %nobr
+        = datetime_short(job.created_at)
+
+    %td= job.label
+
+    %td= location_label(job.source_loc)
+
+    %td= location_label(job.target_loc)
+
+    %td
+      %span.push-status
+        = job.status
+
+      - if (job.status != JOB_STATUS_FINISHED) && (source_processed < source_count)
+        = " (#{source_processed}/#{source_count})"
+
+      - if job_working
+
+        - unless work_progress.nil?
+          %span.push-progress
+            = "#{work_progress}%"
+        %br
+        %span.push-filename
+          %b= source_current unless source_current.nil?
+
+    %td
+      -# unless job.error || job.status == JOB_STATUS_FINISHED
+      - if job_working
+        .progress
+          .progress-bar{style:"width: #{work_progress}%;"}
+            = "#{work_progress} %"
+
+      - else
+        .error{title: error_message}
+          = text_or_empty(job.error)
+
+    %td.nobr.text-right
+      = format_bytes(transfer_total, "B")
+
+    %td.nobr.text-right{title: "started since: #{job.started_since} s"}
+      - if transfer_bitrate
+        %span.push-bitrate
+          = format_bytes(transfer_bitrate, "bps")
+
+    %td
+      - unless job.wid.nil?
+        .label.label-warning.flag.worker-label= job.wid
+
+    %td
+      - unless job.priority.nil?
+        .label.label-default.flag.worker-label= job.priority
+
+    %td
+      .label.flag.worker-label{class: job_tentatives_style(job.tentatives)}= job.tentatives

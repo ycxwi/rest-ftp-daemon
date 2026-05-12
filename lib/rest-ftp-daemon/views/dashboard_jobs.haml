@@ -1,0 +1,59 @@
+-# coding: utf-8
+- jobs_by_status = RestFtpDaemon::JobQueue.instance.jobs_by_status
+- counts_all = RestFtpDaemon::JobQueue.instance.jobs_count
+- jobs = @paginate.subset
+
+.btn-group.btn-group-xs.filters
+  - klass = @filter.empty? ? "btn-info" : ""
+  %a.btn.btn-default{href: dashboard_url(), class: klass}
+    ALL (#{counts_all})
+
+.btn-group.btn-group-xs.filters
+  - jobs_by_status.each do |status, count|
+    - klass = (status.to_s == @filter) ? "btn-info" : ""
+    %a.btn.btn-default{href: dashboard_url(status), class: klass}
+      #{status} (#{count})
+
+
+
+.btn-group.btn-group-xs.paginator
+  = @paginate.browser
+
+%br
+%br
+
+.row
+  #box-jobs.col-md-12
+
+    %table.table.table-striped.table-hover.table-condensed#jobs
+
+      %thead
+        %tr
+          %th{title: "Job identifier"} ID
+          %th{title: "Job type"} T
+          %th pool
+          %th created
+          %th label
+          %th source
+          %th target
+          %th.error status
+          %th{"min-width" => 120} detail
+          %th.text-right size
+          %th.text-right{title: "updated every #{JOB_FTP_CHUNKMB} MB block"} rate
+          %th{title: "Worker ID"} W
+          %th{title: "Priority"} P
+          %th{title: "Tentatives count"} T
+
+        - @jobs_queued.each do |pool, jobs|
+          - unless jobs.empty?
+            %tbody.jobs
+              = render :dashboard_table, {jobs: jobs}
+
+            %thead
+              %tr
+                %td{colspan: 14}
+                  %br
+
+        - unless jobs.empty?
+          %tbody.jobs
+            = render :dashboard_table, {jobs: jobs}

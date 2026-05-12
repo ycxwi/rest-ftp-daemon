@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  rest-ftp-daemon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rest-ftp-daemon
+    ports:
+      - "3000:3000"
+    volumes:
+      # 挂载配置文件以便外部调整
+      - ./docker/rftpd.yml:/etc/rftpd.yml:ro
+      # 可选的持久化日志或传输目录
+      - ./data/logs:/tmp
+      - ./data/transfers:/transfers
+    restart: unless-stopped
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s

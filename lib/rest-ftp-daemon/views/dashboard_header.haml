@@ -1,0 +1,38 @@
+-# coding: utf-8
+- info_procs = (Facter.value :processorcount).to_i
+- info_load = Sys::CPU.load_avg.first.to_f
+- info_norm = info_procs.zero? ? "N/A" : (100 * info_load / info_procs).round(1)
+- info_trans = RestFtpDaemon::Counters.instance.get :data, :transferred
+- info_processed = RestFtpDaemon::Counters.instance.get :jobs, :processed
+- mem = GetProcessMem.new
+
+
+.navbar-header
+
+  %h1
+    = Conf.app_name
+    %small
+      = "v#{Conf.app_ver} [#{Conf.app_env}]"
+
+
+.header-indicators.indicators.navbar-header.pull-right
+
+  .btn-group.btn-group-sm.disabled
+    .btn.btn-default.btn-warning.disabled Load
+    .btn.btn-default.disabled= info_load.round(1)
+
+  .btn-group.btn-group-sm
+    .btn.btn-default.btn-warning.disabled  CPU
+    .btn.btn-default.disabled= "#{info_norm} %"
+
+  .btn-group.btn-group-sm
+    .btn.btn-default.btn-warning.disabled  Mem
+    .btn.btn-default.disabled= format_bytes(mem.bytes, "B")
+
+  .btn-group.btn-group-sm
+    .btn.btn-default.btn-success.disabled  Processed
+    .btn.btn-default.disabled= info_processed.to_i
+
+  .btn-group.btn-group-sm
+    .btn.btn-default.btn-success.disabled  Transferred
+    .btn.btn-default.disabled= format_bytes(info_trans, "B", 1)

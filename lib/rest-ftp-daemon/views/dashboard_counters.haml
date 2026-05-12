@@ -1,0 +1,25 @@
+-# coding: utf-8
+%h2 Counters
+
+%table.table.table-striped.table-hover.table-condensed
+
+  %thead
+    %tr
+      %th group
+      %th name
+      %th.text-right count
+
+  %tbody
+
+    - RestFtpDaemon::Counters.instance.stats.each do |group, values|
+      - if values.is_a? Enumerable
+        - values.each do |name, value|
+          %tr
+            %td= group
+            %td= name
+            %td.text-right= value
+      - else
+        %tr
+          %td
+          %td= group
+          %td.text-right= values

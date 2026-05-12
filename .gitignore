@@ -1,0 +1,14 @@
+pkg
+.bundle
+.DS_Store
+*.log
+tmp/
+log/
+DOC/
+local.yml
+.ruby-version
+/.idea
+
+Gemfile.lock
+.ruby-version
+.ruby-gemset

@@ -1,0 +1,87 @@
+daemonize: true
+port: 3000
+user: rftpd
+# group: rftpd
+# host: "myhost"
+allow_reload: false
+
+# FUTURE
+debug:
+    ftp: false
+    location: false
+
+pools:                      # number of workers decidated to each pool value
+  default: 2
+  urgent: 1
+
+reporter:                   # the subsytem in charge of reporting metrics, mainly to NewRelic
+  debug: false
+  timer: 10                 # report every X seconds
+
+conchita:
+  debug: false
+  timer: 60                 # do the cleaning up every X seconds
+  garbage_collector: true   # force a garbage collector cleanup when cleaning things up
+  clean_failed: 3600        # after X seconds, clean jobs with status="failed"
+  clean_finished: 3600      # //              //              //       finished
+  clean_queued: 86400       # //              //              //       queued
+
+transfer:
+  debug: false
+  mkdir: true               # build directory tree if missing
+  tempfile: true            # transfer to temporary file, rename after sucessful transfer
+  overwrite: false          # overwrite any target file with the same name
+  timeout: 1800             # jobs running for longer than X seconds will be killed
+  notify_after: 5           # wait at least X seconds between HTTP notifications
+  debug_s3: false
+  debug_ftp: false
+  debug_ftps: false
+  debug_sftp: false
+
+  retry_on:                 # job error values that will allow a retry
+    - ftp_temp_error
+    - ftp_perm_error
+    - net_temp_error
+    - net_perm_error
+    - conn_reset_by_peer
+    - conn_timed_out
+    - conn_refused
+    - sftp_auth_failed
+    - conn_host_is_down
+    - conn_unreachable
+    - conn_failed
+    - conn_openssl_error
+  retry_max: 5              # maximum number of retries before giving up on that job
+  retry_for: 1800           # maximum time window to retry failed jobs
+  retry_after: 10           # delay to wait before tries
+
+newrelic:
+  debug: false
+  # license: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  # app_name: "rftpd-bigbusiness-dev"     # app_name used for naming app (used as-is if provided)
+  prefix: "rftpd"                         # app prefix to build app_name
+  # platform: "bigbusiness"               # app platform to build app_name
+  enabled: true
+
+rollbar:
+  debug: false
+  # token: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  enabled: true
+
+logs:
+  path:     "/tmp/"
+  level:    debug
+
+  thin:     "rftpd-default.log"
+  default:  "rftpd-default.log"
+
+  queue:    "rftpd-default.log"
+  api:      "rftpd-default.log"
+  workers:  "rftpd-default.log"
+  transfer: "rftpd-default.log"
+  conchita: "rftpd-default.log"
+  reporter: "rftpd-default.log"
+  notify:   "rftpd-default.log"
+
+  newrelic: "rftpd-newrelic.log"
+  rollbar:  "rftpd-rollbar.log"

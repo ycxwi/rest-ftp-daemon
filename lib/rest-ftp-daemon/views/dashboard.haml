@@ -1,0 +1,43 @@
+- title = "#{Conf.host} [#{Conf.app_env}] #{Conf.app_name} #{Conf.app_ver}"
+
+-# coding: utf-8
+!!! 5
+%html{:lang => "en"}
+  %head
+    %meta{:charset => "utf-8"}/
+    %link{ href:"/css/bootstrap.min.css" , rel: "stylesheet"}
+    %link{ href:"/css/main.css" , rel: "stylesheet"}
+    -# %link{ href:"http://fonts.googleapis.com/css?family=Inconsolata:400,700" , rel: "stylesheet"}
+    %title= title
+
+  %body
+
+    .navbar.navbar-default.navbar-fixed
+      .container-fluid
+        = render :dashboard_header
+
+    .container-fluid
+      .row
+        .col-md-12
+          = render :dashboard_jobs
+
+      .row
+        .col-md-5
+          = render :dashboard_workers
+
+        .col-md-4
+          = render :dashboard_counters
+
+        .col-md-3
+          = render :dashboard_rates
+
+      .row
+        .col-md-12
+          = render :dashboard_tokens
+
+    %br
+    %br
+
+    .footer
+      .container-fluid
+        = render :dashboard_footer

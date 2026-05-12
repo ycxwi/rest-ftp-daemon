@@ -1,0 +1,42 @@
+-# coding: utf-8
+- info_procs = (Facter.value :processorcount).to_i
+
+.footer-signature.pull-left
+
+  &copy;
+  = "2014-#{Time.now.year}"
+  %a{href: "http://bmconseil.com/?ref=rftpd-dashboard", target: TARGET_BLANK} Bruno Medici Consultant
+
+  &middot;
+  %a{href: "http://github.com/ycxwi/rest-ftp-daemon/", target: TARGET_BLANK} GitHub
+
+  &middot;
+  %a{href: "http://refactorcop.com/ycxwi/rest-ftp-daemon/", target: TARGET_BLANK} RefactorCop
+
+  &middot;
+  %a{href: MOUNT_SWAGGER_UI, target: TARGET_BLANK} API
+
+
+.footer-indicators.indicators.pull-right
+
+  .btn-group.btn-group-sm
+    .btn.btn-default.btn-info.disabled Host
+    .btn.btn-default.disabled= Conf.host
+
+  .btn-group.btn-group-sm
+    .btn.btn-default.btn-info.disabled  Features
+    = dashboard_feature :reload, Conf[:allow_reload], "ACTIVE (config is hot-reloadable)",  "changes at startup only"
+    = dashboard_feature :newrelic, Conf.feature?(:newrelic), "ACTIVE (license found)",  "disabled"
+    = dashboard_feature :rollbar, Conf.feature?(:rollbar), "ACTIVE (token found)",  "disabled"
+
+  .btn-group.btn-group-sm
+    .btn.btn-default.btn-info.disabled  IP
+    .btn.btn-default.disabled= Facter.value(:ipaddress)
+
+  .btn-group.btn-group-sm
+    .btn.btn-default.btn-info.disabled  Cores
+    .btn.btn-default.disabled= info_procs
+
+  .btn-group.btn-group-sm
+    .btn.btn-default.btn-info.disabled  Started
+    .btn.btn-default.disabled= datetime_short(Conf.app_started)

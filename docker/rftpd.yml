@@ -1,0 +1,58 @@
+# rest-ftp-daemon Docker 环境配置文件
+# 基于 defaults.yml 覆盖，仅保留必要变更
+
+daemonize: false          # Docker 中前台运行
+port: 3000
+user: rftpd
+allow_reload: false
+
+pools:
+  default: 2
+  urgent: 1
+
+reporter:
+  debug: false
+  timer: 10
+
+conchita:
+  debug: false
+  timer: 60
+  garbage_collector: true
+  clean_failed: 3600
+  clean_finished: 3600
+  clean_queued: 86400
+
+transfer:
+  debug: false
+  mkdir: true
+  tempfile: true
+  overwrite: false
+  timeout: 1800
+  notify_after: 5
+  retry_max: 5
+  retry_for: 1800
+  retry_after: 10
+
+# 禁用外部服务 (在 Docker 中无需配置)
+newrelic:
+  debug: false
+  enabled: false
+
+rollbar:
+  debug: false
+  enabled: false
+
+logs:
+  path: "/tmp/"
+  level: info
+  thin: "rftpd.log"
+  default: "rftpd.log"
+  queue: "rftpd.log"
+  api: "rftpd.log"
+  workers: "rftpd.log"
+  transfer: "rftpd.log"
+  conchita: "rftpd.log"
+  reporter: "rftpd.log"
+  notify: "rftpd.log"
+  newrelic: "rftpd-newrelic.log"
+  rollbar: "rftpd-rollbar.log"
